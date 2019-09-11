@@ -444,7 +444,7 @@ url_exists() {
 			print_and_eval "$EXCMD" "$URL";;
 		"srm://"*)
 			EXCMD="`getcommand gfal-ls lcg-ls srm-check-permissions`"
-
+			export EXCMD="LD_LIBRARY_PATH='' PYTHONPATH='' "$EXCMD
 			[ "$(basename $EXCMD)" == "lcg-ls" ] && EXCMD="$EXCMD -b -T srmv2"
 			print_and_eval "$EXCMD" "$1";;
 		"file://"*)
