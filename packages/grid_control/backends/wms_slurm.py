@@ -21,7 +21,7 @@ from grid_control.job_db import Job
 from grid_control.utils import resolve_install_path
 from hpfwk import clear_current_exception
 from python_compat import identity, ifilter
-
+from datetime import timedelta
 
 class SLURMCheckJobs(CheckJobsWithProcess):
 	def __init__(self, config):
@@ -71,4 +71,6 @@ class SLURM(LocalWMS):
 		params += ' -o "%s" -e "%s"' % (stdout, stderr)
 		if WMS.QUEUES in reqs:
 			params += ' -p %s' % reqs[WMS.QUEUES][0]
+                if WMS.WALLTIME in reqs:
+                        params += ' -t %s' % timedelta(seconds=int(reqs[WMS.WALLTIME]))
 		return params
