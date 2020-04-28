@@ -96,4 +96,12 @@ class SLURM(LocalWMS):
                 if WMS.MEMORY in reqs and int(reqs[WMS.MEMORY]) != -1:
                         params += " --mem %s" % int(reqs[WMS.MEMORY])
 
+                if WMS.SITES in reqs:
+                        blacklist = list(set([_site.replace("-","") for _site in reqs[WMS.SITES] if _site.startswith("-")]))
+                        whiteList = list(set([_site for _site in reqs[WMS.SITES] if not _site.startswith("-")]))
+                        if whiteList:
+                                params += ' -w %s' % ",".join(whiteList)
+                        if blacklist:
+                                params += ' -x %s' % ",".join(blacklist)
+                        
 		return params
