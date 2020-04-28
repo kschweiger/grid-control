@@ -72,5 +72,28 @@ class SLURM(LocalWMS):
 		if WMS.QUEUES in reqs:
 			params += ' -p %s' % reqs[WMS.QUEUES][0]
                 if WMS.WALLTIME in reqs:
-                        params += ' -t %s' % timedelta(seconds=int(reqs[WMS.WALLTIME]))
+                        requestedTime = timedelta(seconds=int(reqs[WMS.WALLTIME]))
+                        
+                        if requestedTime > timedelta(seconds=60*60*24):
+                                daysLefts = False
+                                days = 0
+                                while not daysLefts:
+                                        if requestedTime > timedelta(seconds=60*60*24):
+                                                days += 1
+                                                requestedTime = requestedTime - timedelta(seconds=60*60*24)
+                                                print(days, requestedTime)
+                                        else:
+                                                daysLefts = True
+                                h, m, s = str(requestedTime).split(":")
+                                h = int(h) + days*24
+                                setTimeTo = "{:02}:{:02}:{:02}".format(int(h),int(m),int(s))
+                        else:
+                                setTimeTo = requestedTime
+                        #print(setTimeTo)
+                        params += ' -t %s' % setTimeTo
+                if WMS.CPUS in reqs:
+                        params += ' -c %s' % int(reqs[WMS.CPUS])
+                if WMS.MEMORY in reqs and int(reqs[WMS.MEMORY]) != -1:
+                        params += " --mem %s" % int(reqs[WMS.MEMORY])
+
 		return params
